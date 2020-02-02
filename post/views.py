@@ -15,8 +15,9 @@ def comment_write(request):
         if not content:
             errors.append("댓글을 입력하세요.")
         if not errors:
-            comment = Comment.objects.get(user = request.user, post_id = post_id, content = content)
+            comment = Comment.objects.create(user = request.user, post_id = post_id, content = content)
             return redirect(reverse('post_detail', kwargs = {'post_id':comment.post_id}))
+
     return render(request, 'post_detail.html', {'user':request.user, 'errors':errors})
 
 @login_required
@@ -34,10 +35,12 @@ def post_detail(request, post_id):
     post = get_object_or_404(Post, pk = post_id)
     is_liked = False
 
+    comments = Comment.objects.filter(post=post.id)
+
     if post.likes.filter(id = request.user.id).exists():
         is_liked = True
     
-    return render(request, 'post_detail.html', context = {'post':post, 
+    return render(request, 'post_detail.html', context = {'post':post, 'comments':comments,
     'is_liked':is_liked, 'total_likes':post.total_likes()})
 
 
