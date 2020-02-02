@@ -1,9 +1,23 @@
-from django.shortcuts import render,get_object_or_404, reverse
+from django.shortcuts import render,get_object_or_404, reverse, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import Post
-import json
+from .models import Post, Comment
+
+
+@login_required
+def comment_write(request):
+    errors =[]
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id','').strip()
+        content = request.POST.get('content', '').strip()
+
+        if not content:
+            errors.append("댓글을 입력하세요.")
+        if not errors:
+            comment = Comment.objects.get(user = request.user, post_id = post_id, content = content)
+            return redirect(reverse('post_detail', kwargs = {'post_id':comment.post_id}))
+    return render(request, 'post_detail.html', {'user':request.user, 'errors':errors})
 
 @login_required
 @require_POST
@@ -47,5 +61,5 @@ def post_write(request):
 
         if not errors:
             post = Post.objects.create(user=request.user, title = title, content = content, image = image)
-            return render(request, 'post_list.html')
-    return render(request, 'post_write.html', {'user':request.user, 'errors' : errors})
+            return redirect(reverse('post_detail', kwargs={'post_id': post.id}))
+    return render(request, 'post_write.html', {'user':request.user, 'errors':errors})
