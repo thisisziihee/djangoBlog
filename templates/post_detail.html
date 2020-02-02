@@ -1,0 +1,36 @@
+{% extends 'base_.html' %}
+{% load social_share %}
+{% block content %}
+    <div class = "container">
+        <div class = "row">
+            <div class = "col-lg-8 col-md-10 mx-auto">
+                <h1>{{post.title}}</h1>
+                <hr>
+                {% if post.image %}
+                    <img src = "{{ post.image.url }}" width = "400">
+                {% endif %}
+                <p>{{post.content}}</p>
+            </div>
+        </div>
+
+        <div id = '#like_section'>
+            {% include 'like_section.html' %}
+        </div>
+
+        <div class = "row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <button type = button" class = "btn btn-light float-right">
+                    {% post_to_facebook post.get_absolute "facebook" %}
+                </button>
+                <button type ="button" class ="btn btn-light float-right">
+                    {% send_email post.title "New! {{post.title}} Check it out!" object_or_url "Share via email" %}
+                </button>
+                <button type ="button" class = "btn btn-light float-right">
+                    {% post_to_twitter '{{post.title}} 새로운 글!' post.get_absolute_url "Post to Twitter"%}
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
