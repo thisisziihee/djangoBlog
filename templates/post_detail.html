@@ -18,8 +18,18 @@
             {% include 'like_section.html' %}
         </div>
 
-        <!-- 소셜 공유 -->
+
         <div class = "row">
+            <!-- 태그 달기 -->
+            <div class="col-lg-8 col-md-10 mx-auto">
+                {% for tag in post.tags.all %}
+                    <span class="badge badge-dark">
+                    #{{ tag.name }}
+                    </span>
+                {% endfor %}
+            </div>
+
+            <!-- 소셜 공유 -->
             <div class="col-lg-8 col-md-10 mx-auto">
                 <button type = button" class = "btn btn-light float-right">
                     {% post_to_facebook post.get_absolute "facebook" %}
@@ -32,6 +42,9 @@
                 </button>
             </div>
         </div>
+
+
+
         <!-- 댓글 -->
         <div class = "container">
             <div class = "row">

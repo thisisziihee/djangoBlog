@@ -39,7 +39,6 @@ def post_detail(request, post_id):
 
     if post.likes.filter(id = request.user.id).exists():
         is_liked = True
-    
     return render(request, 'post_detail.html', context = {'post':post, 'comments':comments,
     'is_liked':is_liked, 'total_likes':post.total_likes()})
 
@@ -56,6 +55,7 @@ def post_write(request):
         title = request.POST.get('title', '').strip()
         content = request.POST.get('content', '').strip()
         image = request.FILES.get('image')
+        tags = request.POST.get('tags', '').split(',')
 
         if not title:
             errors.append('제목을 입력하세요.')
@@ -64,5 +64,8 @@ def post_write(request):
 
         if not errors:
             post = Post.objects.create(user=request.user, title = title, content = content, image = image)
+            for tag in tags:
+                tag = tag.strip()
+                post.tags.add(tag)
             return redirect(reverse('post_detail', kwargs={'post_id': post.id}))
     return render(request, 'post_write.html', {'user':request.user, 'errors':errors})
