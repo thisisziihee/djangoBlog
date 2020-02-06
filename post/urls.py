@@ -6,5 +6,4 @@ urlpatterns = [
     path('post_list/', views.post_list, name = 'posts_list'),
     path('post_detail/<int:post_id>', views.post_detail, name = "post_detail"),
     path('post_like/', views.post_like, name = "post_like"),
-    path('like_toggle/', views.like_toggle, name = "like_toggle"),
 ]
